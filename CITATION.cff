@@ -4,6 +4,7 @@ type: software
 title: "Edge-Computing Reference Architecture for Real-Time Structural Health Monitoring: reference implementation and public-data validation"
 version: 1.0.0
 date-released: 2026-11-24
+doi: 10.5281/zenodo.24517852
 license: Apache-2.0
 repository-code: https://github.com/LorenYan98/edge-shm-reference-architecture
 authors:

@@ -2,7 +2,7 @@
 
 Reference implementation and public-data validation for the paper
 
-> P. Yan, *An Edge-Computing Reference Architecture for Real-Time Structural Health Monitoring: Design and Validation on Three In-Service Bridges*, 2026. Preprint identifier pending. Software DOI pending Zenodo archival.
+> P. Yan, *An Edge-Computing Reference Architecture for Real-Time Structural Health Monitoring: Design and Validation on Three In-Service Bridges*, 2026. Preprint identifier pending. Software: Zenodo DOI [10.5281/zenodo.24517852](https://doi.org/10.5281/zenodo.24517852).
 
 The architecture moves anomaly detection to an edge node at the structure (4 GB memory, general-purpose CPU, no accelerator), transmits compact health summaries and anomaly events rather than raw waveforms, and keeps assessing the structure when the network is down. This repository contains everything needed to regenerate every number in the paper from openly licensed monitoring data recorded on three in-service bridges.
 
