@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite both the software and the paper."
+type: software
+title: "Edge-Computing Reference Architecture for Real-Time Structural Health Monitoring: reference implementation and public-data validation"
+version: 1.0.0
+date-released: 2026-11-24
+license: Apache-2.0
+repository-code: https://github.com/LorenYan98/edge-shm-reference-architecture
+authors:
+  - family-names: Yan
+    given-names: Peidong
+    # orcid: https://orcid.org/0000-0000-0000-0000
+keywords:
+  - structural health monitoring
+  - edge computing
+  - reference architecture
+  - anomaly detection
+  - bridge monitoring

@@ -1,0 +1,17 @@
+{
+ "hardware": "container, 4 vCPU, 4 GB RAM, CPU only",
+ "threads": 4,
+ "n": 1160,
+ "mean_ms": 59.032741379310345,
+ "p50": 92.734,
+ "p95": 98.9208,
+ "p99": 103.83976000000003,
+ "max": 199.541,
+ "peak_rss_mb": 375.1328125,
+ "pca_k": {
+  "KW51": 810,
+  "VANERSBORG": 1348,
+  "CHILLON": 1296
+ },
+ "numpy": "1.21.6"
+}

@@ -1,0 +1,7 @@
+dataset,model,threshold_rule,threshold_value,hardware,n_windows,run_date,placeholder
+KW51,MAE-ViT,median + 2.5 sd of calibration-split error,0.00176882,"development host (32-core CPU); edge latency measured in a 4-vCPU, 4 GB container",6090,2026-10-20,0
+KW51,PCA-810,median + 2.5 sd of calibration-split error,0.000553439,"development host (32-core CPU); edge latency measured in a 4-vCPU, 4 GB container",6090,2026-10-20,0
+VANERSBORG,MAE-ViT,median + 2.5 sd of calibration-split error,0.00278224,"development host (32-core CPU); edge latency measured in a 4-vCPU, 4 GB container",1120,2026-10-20,0
+VANERSBORG,PCA-1348,median + 2.5 sd of calibration-split error,0.00126422,"development host (32-core CPU); edge latency measured in a 4-vCPU, 4 GB container",1120,2026-10-20,0
+CHILLON,MAE-ViT,median + 2.5 sd of calibration-split error,0.00299736,"development host (32-core CPU); edge latency measured in a 4-vCPU, 4 GB container",4136,2026-10-20,0
+CHILLON,PCA-1296,median + 2.5 sd of calibration-split error,0.000496639,"development host (32-core CPU); edge latency measured in a 4-vCPU, 4 GB container",4136,2026-10-20,0

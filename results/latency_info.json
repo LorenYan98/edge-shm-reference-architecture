@@ -1,0 +1,12 @@
+{
+ "hardware": "container, 4 vCPU, 4 GB RAM, CPU only",
+ "threads": 4,
+ "n": 1160,
+ "mean_ms": 284.05454999999995,
+ "p50": 276.29200000000003,
+ "p95": 301.90765,
+ "p99": 304.14095,
+ "max": 316.71,
+ "peak_rss_mb": 838.0,
+ "torch": "1.13.1+cpu"
+}

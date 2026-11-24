@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Edge SHM Reference Architecture — Documentation</title>
+<meta name="description" content="Open reference architecture for continuous, on-bridge structural health monitoring on low-cost edge hardware.">
+
+<style>
+:root{
+  --bg:#ffffff;--fg:#1f2328;--muted:#59636e;--line:#d0d7de;--soft:#f6f8fa;
+  --accent:#0b5cad;--accent-soft:#e6f0fb;--ok:#1a7f37;--ok-soft:#dafbe1;--warn:#9a6700;--warn-soft:#fff8c5;
+  --code-bg:#0d1117;--code-fg:#e6edf3;--sidebar:272px;--radius:8px;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{margin:0;background:var(--bg);color:var(--fg);font-size:15px;line-height:1.6}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+code,pre,kbd{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+code{background:var(--soft);border:1px solid var(--line);border-radius:4px;padding:.1em .35em;font-size:.9em}
+pre{background:var(--code-bg);color:var(--code-fg);padding:14px 16px;border-radius:var(--radius);overflow:auto;font-size:13px;line-height:1.55}
+pre code{background:none;border:0;padding:0;color:inherit;font-size:inherit}
+h1,h2,h3{line-height:1.25;letter-spacing:-.01em}
+h1{font-size:30px;margin:0 0 8px}
+h2{font-size:22px;margin:48px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+h3{font-size:16px;margin:24px 0 8px}
+p{margin:8px 0}
+table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14px}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:var(--soft);font-weight:600}
+tr:nth-child(even) td{background:#fcfcfd}
+.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+
+/* top bar */
+.top{position:sticky;top:0;z-index:10;height:56px;display:flex;align-items:center;gap:16px;padding:0 20px;background:#fff;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:16px;color:var(--fg)}
+.brand svg{width:26px;height:26px}
+.top .spacer{flex:1}
+.top nav a{margin-left:18px;color:var(--muted);font-size:14px}
+.top nav a:hover{color:var(--fg);text-decoration:none}
+.ver{font-size:12px;padding:2px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-weight:600;border:1px solid #b6d0ee}
+
+/* layout */
+.wrap{display:grid;grid-template-columns:var(--sidebar) 1fr;max-width:1280px;margin:0 auto}
+aside{position:sticky;top:56px;height:calc(100vh - 56px);overflow:auto;padding:24px 16px 24px 20px;border-right:1px solid var(--line)}
+aside .grp{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:18px 0 6px;font-weight:700}
+aside a{display:block;padding:5px 10px;border-radius:6px;color:var(--fg);font-size:14px}
+aside a:hover{background:var(--soft);text-decoration:none}
+aside a.sub{padding-left:22px;color:var(--muted);font-size:13px}
+main{padding:32px 48px 96px;min-width:0;max-width:900px}
+
+/* hero */
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 18px}
+.badge{display:inline-flex;align-items:stretch;font-size:12px;font-weight:600;border-radius:4px;overflow:hidden;border:1px solid var(--line);line-height:1}
+.badge span{padding:5px 8px}
+.badge .k{background:#555;color:#fff}
+.badge .v{background:var(--soft);color:var(--fg)}
+.badge.doi .v{background:#1f6feb;color:#fff}
+.badge.ok .v{background:var(--ok);color:#fff}
+.badge.lic .v{background:#8250df;color:#fff}
+.lead{font-size:17px;color:var(--muted);margin:4px 0 0;max-width:720px}
+.cta{display:flex;gap:10px;margin:18px 0 6px;flex-wrap:wrap}
+.btn{display:inline-block;padding:8px 14px;border-radius:6px;font-weight:600;font-size:14px;border:1px solid var(--line);color:var(--fg);background:#fff}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn:hover{text-decoration:none;filter:brightness(.97)}
+
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:22px 0 8px}
+.kpi{border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;background:var(--soft)}
+.kpi b{display:block;font-size:24px;letter-spacing:-.02em}
+.kpi small{color:var(--muted);font-size:12px}
+
+.note{border-left:4px solid var(--accent);background:var(--accent-soft);padding:10px 14px;border-radius:0 var(--radius) var(--radius) 0;margin:14px 0;font-size:14px}
+.note.warn{border-color:var(--warn);background:var(--warn-soft)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.card{border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px}
+.card h3{margin:0 0 6px;font-size:15px}
+.card p{margin:0;color:var(--muted);font-size:14px}
+.diagram{border:1px solid var(--line);border-radius:var(--radius);padding:12px;background:#fff;margin:14px 0}
+.diagram svg{width:100%;height:auto;display:block}
+.diagram .cap{color:var(--muted);font-size:13px;margin:8px 4px 0}
+.tree{font-size:13px}
+footer{border-top:1px solid var(--line);margin-top:64px;padding-top:16px;color:var(--muted);font-size:13px}
+@media (max-width:900px){.wrap{grid-template-columns:1fr}aside{display:none}main{padding:24px 20px}.kpis{grid-template-columns:1fr 1fr}.grid2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <a class="brand" href="#overview" aria-label="Edge SHM Reference Architecture home">
+    <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="2" y="18" width="28" height="4" rx="1" fill="#0b5cad"/><path d="M4 18 C 10 6, 22 6, 28 18" stroke="#0b5cad" stroke-width="3" fill="none"/><rect x="8" y="12" width="2" height="6" fill="#0b5cad"/><rect x="15" y="9" width="2" height="9" fill="#0b5cad"/><rect x="22" y="12" width="2" height="6" fill="#0b5cad"/><circle cx="16" cy="26" r="2.5" fill="#1a7f37"/></svg>
+    Edge SHM Reference Architecture
+  </a>
+  <span class="ver">v1.0.0</span>
+  <span class="spacer"></span>
+  <nav>
+    <a href="#quickstart">Quickstart</a>
+    <a href="#benchmarks">Benchmarks</a>
+    <a href="#hardware">Hardware</a>
+    <a href="#cite">Cite</a>
+    <a href="https://github.com/LorenYan98/edge-shm-reference-architecture">GitHub</a>
+  </nav>
+</header>
+
+<div class="wrap">
+<aside aria-label="Documentation navigation">
+  <div class="grp">Getting started</div>
+  <a href="#overview">Overview</a>
+  <a href="#design-goals">Design goals</a>
+  <a href="#quickstart">Quickstart</a>
+  <div class="grp">Architecture</div>
+  <a href="#architecture">System overview</a>
+  <a class="sub" href="#pipeline">Edge processing pipeline</a>
+  <a class="sub" href="#uplink">Uplink and offline operation</a>
+  <a class="sub" href="#baseline">Baseline and anomaly model</a>
+  <div class="grp">Reference</div>
+  <a href="#benchmarks">Benchmarks</a>
+  <a href="#hardware">Hardware specification</a>
+  <a href="#layout">Repository layout</a>
+  <a href="#config">Configuration</a>
+  <div class="grp">Project</div>
+  <a href="#roadmap">Roadmap</a>
+  <a href="#cite">Citing this work</a>
+  <a href="#license">License</a>
+</aside>
+
+<main>
+<section id="overview">
+  <h1>Edge SHM Reference Architecture</h1>
+  <p class="lead">An open, reproducible design for continuous structural health monitoring (SHM) that runs at the bridge, on low-cost hardware, and keeps working when the network does not.</p>
+
+  <div class="badges" aria-label="Project badges">
+    <span class="badge"><span class="k">release</span><span class="v">v1.0.0</span></span>
+    <span class="badge doi"><span class="k">DOI</span><span class="v">Pending archival</span></span>
+    <span class="badge"><span class="k">preprint</span><span class="v">Pending publication</span></span>
+    <span class="badge ok"><span class="k">validated on</span><span class="v">3 in-service bridges</span></span>
+    <span class="badge"><span class="k">python</span><span class="v">3.7+</span></span>
+    <span class="badge lic"><span class="k">license</span><span class="v">Apache-2.0</span></span>
+  </div>
+
+  <div class="cta">
+    <a class="btn primary" href="#quickstart">Get started</a>
+    <a class="btn" href="https://github.com/LorenYan98/edge-shm-reference-architecture">View source</a>
+    <a class="btn" href="https://github.com/LorenYan98/edge-shm-reference-architecture/releases">Download release (Zenodo)</a>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi"><b>59 ms</b><small>mean window-to-decision latency in a 4-vCPU, 4 GB container</small></div>
+    <div class="kpi"><b>0.925</b><small>AUC separating pre- and post-retrofit condition, KW51 railway bridge</small></div>
+    <div class="kpi"><b>99.4%</b><small>specificity across a 7 to 26 °C season, Chillon viaduct</small></div>
+    <div class="kpi"><b>3</b><small>in-service bridges, three structural forms, three countries, all open data</small></div>
+  </div>
+
+  <p>Most monitoring systems stream raw waveforms to a central server and analyze them later. That design is expensive per bridge, needs a reliable link, and stops working during the events it is meant to catch. This architecture moves the analysis to an <strong>edge node at the structure</strong>: it ingests continuous sensor streams, compares them against a learned baseline, and sends only compact health summaries and anomaly flags upstream. The design is deliberately hardware-agnostic and vendor-neutral so that a transportation agency, a consulting firm, or a research group can implement it on their own inventory without rebuilding the data-processing layer.</p>
+</section>
+
+<section id="design-goals">
+  <h2>Design goals</h2>
+  <div class="grid2">
+    <div class="card"><h3>1. Process at the source</h3><p>Continuous windows of sensor data are analyzed on the bridge. End-to-end latency from sample to assessment is well under one second.</p></div>
+    <div class="card"><h3>2. Transmit summaries, not waveforms</h3><p>Uplink carries health indicators, trend summaries and anomaly events. Raw data stays in a local ring buffer and is retrievable on demand.</p></div>
+    <div class="card"><h3>3. Run on commodity hardware</h3><p>Validated on a 4 GB, general-purpose CPU node. Per-site cost is in the range of a consumer single-board computer, not a server.</p></div>
+    <div class="card"><h3>4. Stay autonomous</h3><p>No cloud dependency in the processing path. Loss of connectivity degrades reporting latency, never analysis.</p></div>
+  </div>
+</section>
+
+<section id="quickstart">
+  <h2>Quickstart</h2>
+  <p>Regenerate every number in the paper from the public datasets. The repository is a research pipeline, not a packaged daemon: it downloads the data, builds the spectrogram caches, fits the detectors, exports per-window results and times the edge node in a resource-limited container.</p>
+<pre><code># 1. Install (Python 3.7+; Docker for the latency step)
+git clone https://github.com/LorenYan98/edge-shm-reference-architecture.git
+cd edge-shm-reference-architecture
+pip install -r requirements.txt
+docker build -t shm-edge:py37 docker/
+
+# 2. Fetch the three open datasets from Zenodo (~5 GB, resumable, checksums in data/)
+./download.sh &amp;&amp; ./download_chillon.sh
+
+# 3. Caches, detectors, evaluation and ViT latency (hours for the ViT trainers; minutes for PCA alone)
+./run_v2.sh
+
+# 4. Masked ViT scoring, merge, and PCA latency inside the 4-vCPU / 4 GB container
+python3 -m shm.rescore --k-masks 4 &amp;&amp; python3 -m shm.merge_rescore
+./run_pca_latency.sh</code></pre>
+  <div class="note">Outputs land in <code>out/</code> with the same file names as the committed <code>results/</code>, which are the files the paper's build script reads. <code>results/summary.json</code> holds the confusion matrices and AUCs; <code>results/latency_pca_info.json</code> the latency distribution.</div>
+</section>
+
+<section id="architecture">
+  <h2>Architecture</h2>
+  <p>The system has three planes. The <strong>sensing plane</strong> is whatever is already on the structure. The <strong>edge plane</strong> is a single node per structure (or per span group) that runs the processing pipeline. The <strong>agency plane</strong> receives summaries and feeds existing asset-management workflows. Only the edge plane is prescribed by this architecture; the other two are integration points.</p>
+
+  <div class="diagram">
+  <svg viewBox="0 0 980 420" role="img" aria-label="Three-plane architecture: sensing, edge node, agency">
+    <defs>
+      <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#59636e"/></marker>
+      <style>
+        .pl{fill:#f6f8fa;stroke:#d0d7de;stroke-width:1.5;rx:10}
+        .bx{fill:#fff;stroke:#0b5cad;stroke-width:1.5;rx:6}
+        .bxg{fill:#fff;stroke:#1a7f37;stroke-width:1.5;rx:6}
+        .bxm{fill:#fff;stroke:#8250df;stroke-width:1.5;rx:6}
+        .t{font:13px -apple-system,Segoe UI,Helvetica,Arial,sans-serif;fill:#1f2328}
+        .ts{font:11.5px -apple-system,Segoe UI,Helvetica,Arial,sans-serif;fill:#59636e}
+        .tt{font:600 12px -apple-system,Segoe UI,Helvetica,Arial,sans-serif;fill:#59636e;letter-spacing:.08em}
+        .ln{stroke:#59636e;stroke-width:1.5;fill:none;marker-end:url(#ar)}
+        .lnd{stroke:#59636e;stroke-width:1.5;fill:none;stroke-dasharray:5 4;marker-end:url(#ar)}
+      </style>
+    </defs>
+
+    <!-- planes -->
+    <rect class="pl" x="10" y="40" width="190" height="340"/>
+    <text class="tt" x="20" y="30">SENSING PLANE · on structure</text>
+    <rect class="pl" x="230" y="40" width="500" height="340"/>
+    <text class="tt" x="240" y="30">EDGE PLANE · one node per structure (this architecture)</text>
+    <rect class="pl" x="760" y="40" width="210" height="340"/>
+    <text class="tt" x="770" y="30">AGENCY PLANE · existing systems</text>
+
+    <!-- sensors -->
+    <rect class="bx" x="30" y="70" width="150" height="56"/>
+    <text class="t" x="105" y="93" text-anchor="middle">Accelerometers</text>
+    <text class="ts" x="105" y="111" text-anchor="middle">100–200 Hz, multi-channel</text>
+    <rect class="bx" x="30" y="150" width="150" height="56"/>
+    <text class="t" x="105" y="173" text-anchor="middle">Strain / tilt / temp</text>
+    <text class="ts" x="105" y="191" text-anchor="middle">low-rate channels</text>
+    <rect class="bx" x="30" y="230" width="150" height="56" stroke-dasharray="4 3"/>
+    <text class="t" x="105" y="253" text-anchor="middle">Camera (optional)</text>
+    <text class="ts" x="105" y="271" text-anchor="middle">visual channel, fusion input</text>
+    <text class="ts" x="105" y="330" text-anchor="middle">Any protocol: MQTT, Modbus,</text>
+    <text class="ts" x="105" y="346" text-anchor="middle">serial, vendor SDK via adapter</text>
+
+    <!-- edge pipeline -->
+    <rect class="bx" x="250" y="70" width="130" height="50"/>
+    <text class="t" x="315" y="91" text-anchor="middle">Ingest adapters</text>
+    <text class="ts" x="315" y="107" text-anchor="middle">timestamp · align · QC</text>
+
+    <rect class="bx" x="415" y="70" width="130" height="50"/>
+    <text class="t" x="480" y="91" text-anchor="middle">Windowing</text>
+    <text class="ts" x="480" y="107" text-anchor="middle">sliding windows, overlap</text>
+
+    <rect class="bx" x="580" y="70" width="130" height="50"/>
+    <text class="t" x="645" y="91" text-anchor="middle">Feature extraction</text>
+    <text class="ts" x="645" y="107" text-anchor="middle">spectral · modal · stats</text>
+
+    <rect class="bxg" x="580" y="160" width="130" height="50"/>
+    <text class="t" x="645" y="181" text-anchor="middle">Baseline model</text>
+    <text class="ts" x="645" y="197" text-anchor="middle">learned normal condition</text>
+
+    <rect class="bxg" x="415" y="160" width="130" height="50"/>
+    <text class="t" x="480" y="181" text-anchor="middle">Anomaly assessment</text>
+    <text class="ts" x="480" y="197" text-anchor="middle">deviation score · threshold</text>
+
+    <rect class="bxm" x="250" y="160" width="130" height="50"/>
+    <text class="t" x="315" y="181" text-anchor="middle">Fusion</text>
+    <text class="ts" x="315" y="197" text-anchor="middle">multi-channel / multi-modal</text>
+
+    <rect class="bx" x="250" y="260" width="200" height="50"/>
+    <text class="t" x="350" y="281" text-anchor="middle">Local store (ring buffer)</text>
+    <text class="ts" x="350" y="297" text-anchor="middle">raw windows · features · events</text>
+
+    <rect class="bx" x="480" y="260" width="230" height="50"/>
+    <text class="t" x="595" y="281" text-anchor="middle">Uplink &amp; store-and-forward</text>
+    <text class="ts" x="595" y="297" text-anchor="middle">summaries + alerts, queued when offline</text>
+
+    <text class="ts" x="480" y="350" text-anchor="middle">Measured: 59 ms mean, sample → assessment, 4 GB node</text>
+    <text class="ts" x="480" y="366" text-anchor="middle">No network in the processing path</text>
+
+    <!-- agency -->
+    <rect class="bx" x="780" y="100" width="170" height="56"/>
+    <text class="t" x="865" y="123" text-anchor="middle">Operations dashboard</text>
+    <text class="ts" x="865" y="141" text-anchor="middle">health indicators, trends</text>
+    <rect class="bx" x="780" y="190" width="170" height="56"/>
+    <text class="t" x="865" y="213" text-anchor="middle">Alerting</text>
+    <text class="ts" x="865" y="231" text-anchor="middle">anomaly events to on-call</text>
+    <rect class="bx" x="780" y="280" width="170" height="56"/>
+    <text class="t" x="865" y="303" text-anchor="middle">Asset management</text>
+    <text class="ts" x="865" y="321" text-anchor="middle">risk-based inspection intervals</text>
+
+    <!-- arrows -->
+    <path class="ln" d="M180 98 H250"/>
+    <path class="ln" d="M180 178 H215 V98"/>
+    <path class="lnd" d="M180 258 H230 V185 H250"/>
+    <path class="ln" d="M380 95 H415"/>
+    <path class="ln" d="M545 95 H580"/>
+    <path class="ln" d="M645 120 V160"/>
+    <path class="ln" d="M580 185 H545"/>
+    <path class="ln" d="M415 185 H380"/>
+    <path class="ln" d="M315 210 V260"/>
+    <path class="ln" d="M480 210 V240 H595 V260"/>
+    <path class="ln" d="M710 285 H745 V128 H780"/>
+    <path class="ln" d="M745 218 H780"/>
+    <path class="ln" d="M745 308 H780"/>
+    <path class="lnd" d="M450 285 H480"/>
+  </svg>
+  <p class="cap">Figure 1. Solid arrows are the always-on path. Dashed arrows are optional inputs (visual channel) and on-demand raw retrieval. Nothing to the right of the edge plane is required for the node to keep assessing the structure.</p>
+  </div>
+
+  <h3 id="pipeline">Edge processing pipeline</h3>
+  <p>The table is the specification. The reference implementation in <code>shm/</code> covers the stages marked <em>implemented</em> on recorded data; the store and uplink stages are specified in the paper and left to the integrator, because they depend on the agency's transport and asset-management systems.</p>
+  <table>
+    <tr><th style="width:22%">Stage</th><th>Responsibility</th><th style="width:28%">In this release</th></tr>
+    <tr><td>Ingest</td><td>Normalize vendor streams to a common timestamped frame; align channels; flag dropouts.</td><td>Implemented for the three dataset formats (<code>shm/datasets.py</code>). Live adapters are an integration point.</td></tr>
+    <tr><td>Windowing and front end</td><td>60 s windows per channel; structure-specific resampling, frame length and FFT geometry set from the documented dynamics of the bridge.</td><td>Implemented (<code>shm/frontend.py</code>): one front end for KW51 and Chillon, one for Vänersborg.</td></tr>
+    <tr><td>Representation</td><td>100 x 200 log-PSD spectrogram image per window, mean-removed, scaled with training-set extremes.</td><td>Implemented (<code>shm/spectrogram.py</code>).</td></tr>
+    <tr><td>Channel handling</td><td>Each channel is scored as its own window, so the detector is channel-count agnostic; a structure-level decision aggregates channels.</td><td>Implemented.</td></tr>
+    <tr><td>Baseline model</td><td>Fitted on reference-condition windows only. Deployed detector: PCA retaining 95 % of variance, score = reconstruction residual. Learned alternative: masked-autoencoding Vision Transformer.</td><td>Both implemented (<code>shm/evaluate.py</code>, <code>shm/train.py</code>, <code>shm/rescore.py</code>).</td></tr>
+    <tr><td>Anomaly assessment</td><td>Threshold per structure and detector: median + 2.5 sd of the calibration-split score. Persistence logic over consecutive windows is an operator setting.</td><td>Threshold calibration implemented; persistence specified.</td></tr>
+    <tr><td>Local store</td><td>Ring buffer of raw windows plus append-only score and event logs, sized to days.</td><td>Specified (paper, Section 3); integration point.</td></tr>
+    <tr><td>Uplink</td><td>Publish summaries and events; queue durably when offline; backfill on reconnect. Roughly 100:1 reduction against raw waveforms.</td><td>Specified (paper, Section 3); integration point.</td></tr>
+  </table>
+
+  <h3 id="uplink">Uplink and offline operation</h3>
+  <p>The uplink is the only component that touches a network. It publishes three message types: periodic <em>health summaries</em> (compact statistics per window group), <em>anomaly events</em> (score, channels implicated, time range), and <em>trend digests</em> (daily). Raw windows are never streamed by default; an operator can request a specific time range and the node serves it from the local ring buffer. When the link is down, messages are queued on disk and delivered in order on reconnect. Analysis continues at full rate throughout.</p>
+
+  <h3 id="baseline">Baseline and anomaly model</h3>
+  <p>Operational bridge data rarely contains labeled damage, so the architecture follows the established SHM practice of characterizing normal behavior and flagging departures from it. The baseline is fit on an initial period of healthy operation and refreshed on a schedule to track slow environmental drift. Evaluation therefore reports <strong>specificity</strong> (how often a healthy structure is correctly called healthy) as the primary metric, because a high false-alarm rate is what makes agencies turn monitoring systems off. Sensitivity to documented structural changes is reported where the dataset includes them.</p>
+</section>
+
+<section id="benchmarks">
+  <h2>Benchmarks</h2>
+  <p>All three evaluations use openly licensed monitoring data recorded on in-service bridges, with documented reference periods. The protocol is identical across structures: reference-condition files split 60 / 20 / 20 into train, calibration and test by source file; changed-condition files are test only; one threshold per structure from the calibration split. Latency is measured for the deployed detector at batch size one inside a 4-vCPU, 4 GB, CPU-only container.</p>
+  <table>
+    <tr><th>Structure</th><th>Form, country</th><th>Condition change</th><th class="num">AUC</th><th class="num">Specificity</th><th class="num">Sensitivity</th></tr>
+    <tr><td>KW51</td><td>Steel bowstring railway bridge, Belgium</td><td>Retrofit of deficient diagonal connections (2019)</td><td class="num">0.925</td><td class="num">98.89%</td><td class="num">35.4%</td></tr>
+    <tr><td>Chillon</td><td>Prestressed concrete box-girder viaduct, Switzerland</td><td>None; normal operation across 7 to 26 °C</td><td class="num">n/a</td><td class="num">99.44%</td><td class="num">n/a</td></tr>
+    <tr><td>Vänersborg</td><td>Riveted steel bascule railway bridge, Sweden</td><td>Verified fracture in one member (2023)</td><td class="num">0.620</td><td class="num">95.69%</td><td class="num">2.2%</td></tr>
+  </table>
+  <div class="grid2">
+    <div class="card"><h3>Latency</h3><p>Deployed detector: 59.0 ms mean, 98.9 ms P95, 375 MB peak memory over 1,160 test windows. The 34.3 M-parameter Vision Transformer under the same protocol: AUC 0.905 on KW51, 284 ms mean; it does not exceed the linear detector. A centralized pilot reported 18 to 67 seconds for transport alone before analysis began.</p></div>
+    <div class="card"><h3>What the third row means</h3><p>Vänersborg is kept as a scoped negative result: a generic spectrogram detector on the available channels does not see a local fracture in one member. The protocol was not tuned to make it pass. The paper discusses the bound this places on structure-agnostic detection.</p></div>
+  </div>
+</section>
+
+<section id="hardware">
+  <h2>Hardware specification</h2>
+  <table>
+    <tr><th style="width:22%">Component</th><th>Minimum (validated)</th><th>Reference build</th><th>Notes</th></tr>
+    <tr><td>Compute</td><td>4 vCPU, 4 GB RAM, x86-64, CPU only (the container the latencies were measured in)</td><td>Single-board computer class, 8 GB RAM</td><td>No GPU, NPU or FPGA required. Peak resident memory of the deployed detector is 375 MB.</td></tr>
+    <tr><td>Storage</td><td>32 GB</td><td>128 GB industrial SD or NVMe</td><td>Sized so the raw ring buffer covers multiple days at 200 Hz on 8 channels.</td></tr>
+    <tr><td>Sensing</td><td>1 accelerometer channel</td><td>4–8 accelerometer channels plus temperature</td><td>Validated with 6 (KW51), 5 (Vänersborg) and 11 (Chillon) channels at 100 to 825.8 Hz native rates.</td></tr>
+    <tr><td>Connectivity</td><td>None required for analysis</td><td>LTE/5G or LoRaWAN for summaries</td><td>Summary payloads are small enough for low-bandwidth links.</td></tr>
+    <tr><td>Power</td><td>5 W class</td><td>Solar + battery, 48 h autonomy</td><td>Matches field solicitations that require autonomous operation on portable power.</td></tr>
+    <tr><td>Enclosure</td><td>IP65</td><td>IP67, -20 °C to 60 °C</td><td>Conformal coating recommended for coastal sites.</td></tr>
+  </table>
+  <div class="note warn">Figures in the <em>Reference build</em> column are design targets for field deployment. Only the <em>Minimum (validated)</em> column reflects hardware the benchmarks were measured on.</div>
+</section>
+
+<section id="layout">
+  <h2>Repository layout</h2>
+<pre class="tree"><code>edge-shm-reference-architecture/
+├── shm/
+│   ├── datasets.py        # loaders for the three public datasets -> cache/v2/&lt;S&gt;.npz
+│   ├── frontend.py        # per-structure front ends (window, FFT geometry, channels, level)
+│   ├── spectrogram.py     # 100 x 200 log-PSD images
+│   ├── evaluate.py        # PCA detector (deployed), threshold calibration, per-window export
+│   ├── train.py           # MAE-ViT per structure (learned alternative)
+│   ├── rescore.py, merge_rescore.py
+│   ├── raw_sample.py, latency_pca.py, latency.py   # edge-latency probes (run in the container)
+│   └── diagnose.py, diagnose_raw.py               # diagnostics behind the v1 -> v2 front-end change
+├── docker/Dockerfile      # 4-vCPU / 4 GB edge-node emulation image
+├── data/chillon_list.txt  # Chillon manifest: Zenodo URLs and md5 checksums
+├── results/               # per-window exports, ROC and threshold sweeps, latency, summary.json
+├── docs/                  # this page
+├── download.sh  download_chillon.sh  run_v2.sh  run_pca_latency.sh  finish_v2.sh
+├── CITATION.cff  .zenodo.json  LICENSE  requirements.txt</code></pre>
+  <p>Raw data (about 5 GB) and trained weights are regenerated by the scripts.</p>
+</section>
+
+<section id="config">
+  <h2>Front-end configuration</h2>
+  <p>Configuration is per structure and lives in <code>shm/frontend.py</code>. The two front ends in this release are set from the documented dynamics of each bridge; a new structure gets a new entry in the same table.</p>
+  <table>
+    <tr><th>Parameter</th><th>KW51 and Chillon</th><th>Vänersborg</th><th>Why</th></tr>
+    <tr><td>Sampling rate</td><td>resampled to 100 Hz</td><td>native 200 Hz</td><td>Global modes of the two large structures sit below 10 Hz; the Vänersborg signature sits at 20 to 85 Hz.</td></tr>
+    <tr><td>Window</td><td>60 s</td><td>60 s</td><td>Long enough to resolve 0.05 Hz modal shifts on KW51.</td></tr>
+    <tr><td>Frame / step</td><td>20 s Hanning, 0.4 s step</td><td>2 s Hanning, 0.585 s step</td><td>100 frames per window in both cases.</td></tr>
+    <tr><td>FFT / band</td><td>2000-point, 0.05 Hz bins, 0 to 9.95 Hz</td><td>400-point, 0.5 Hz bins, 0 to 99.5 Hz</td><td>200 bins per frame in both cases, so one 100 x 200 image geometry serves all structures.</td></tr>
+    <tr><td>Channels</td><td>KW51: 6 deck channels present in both years; Chillon: all 11</td><td>all 5</td><td>Channel sets must be stable across the reference and changed periods.</td></tr>
+    <tr><td>Level</td><td colspan="2">per-window mean removed; min-max scaled with training-set extremes</td><td>Removes dependence on excitation amplitude (train traffic, wind).</td></tr>
+    <tr><td>Detector</td><td colspan="2">PCA, 95 % variance; score = mean squared residual</td><td>Linear, fast, no training schedule; the ViT is the evaluated alternative.</td></tr>
+    <tr><td>Threshold</td><td colspan="2">median + 2.5 sd of calibration-split scores</td><td>Set on reference data only; no changed-condition data is used.</td></tr>
+  </table>
+</section>
+
+<section id="roadmap">
+  <h2>Roadmap</h2>
+  <table>
+    <tr><th style="width:14%">Version</th><th>Scope</th><th style="width:16%">Status</th></tr>
+    <tr><td>v1.0.0</td><td>Edge-tier pipeline, three public-data benchmarks, reproducible metrics, container latency measurement</td><td>Released</td></tr>
+    <tr><td>v1.1</td><td>Streaming front end for live accelerometer input; local store and uplink reference implementations</td><td>Planned</td></tr>
+    <tr><td>v1.2</td><td>Evaluation on an instrumented structure with a partner agency or laboratory; field notes and power measurements</td><td>Planned</td></tr>
+    <tr><td>v2.0</td><td>Stable adapter and detector interfaces; deployment guide for agency pilots</td><td>Planned</td></tr>
+  </table>
+</section>
+
+<section id="cite">
+  <h2>Citing this work</h2>
+  <p>If you use the architecture, the benchmark harness, or the dataset manifests, please cite the preprint and the software release.</p>
+<pre><code>@article{yan2026edgeshm,
+  title   = {An Edge-Computing Reference Architecture for Real-Time Structural Health
+             Monitoring: Design and Validation on Three In-Service Bridges},
+  author  = {Yan, Peidong},
+  year    = {2026},
+  note    = {Preprint identifier pending},
+}
+
+@software{yan2026edgeshm_sw,
+  title     = {Edge-Computing Reference Architecture for Real-Time Structural Health
+               Monitoring: reference implementation and public-data validation},
+  author    = {Yan, Peidong},
+  version   = {1.0.0},
+  year      = {2026},
+  publisher = {Zenodo},
+  url       = {https://github.com/LorenYan98/edge-shm-reference-architecture/releases/tag/v1.0.0}
+}</code></pre>
+</section>
+
+<section id="license">
+  <h2>License</h2>
+  <p>Code is released under the Apache License 2.0. Documentation and figures are CC BY 4.0. Benchmark datasets remain under their original publishers' terms; the repository ships manifests and checksums, not the data.</p>
+</section>
+
+<footer>
+  Edge SHM Reference Architecture · v1.0.0 · <a href="https://github.com/LorenYan98/edge-shm-reference-architecture/releases">Zenodo</a> · <a href="https://github.com/LorenYan98/edge-shm-reference-architecture">GitHub</a> · Open-source research project; not affiliated with or endorsed by Amazon Web Services.
+</footer>
+</main>
+</div>
+</body>
+</html>

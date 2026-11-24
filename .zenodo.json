@@ -1,0 +1,36 @@
+{
+  "title": "Edge-Computing Reference Architecture for Real-Time Structural Health Monitoring: reference implementation and public-data validation",
+  "upload_type": "software",
+  "license": "Apache-2.0",
+  "creators": [
+    {
+      "name": "Yan, Peidong"
+    }
+  ],
+  "description": "Reference implementation, download scripts, front-end configurations, detectors, training configuration, per-window outputs and diagnostics for the paper 'An Edge-Computing Reference Architecture for Real-Time Structural Health Monitoring: Design and Validation on Three In-Service Bridges'. Every number in the paper is regenerated from openly licensed monitoring data from the KW51 (Leuven), Vänersborg and Chillon bridges.",
+  "keywords": [
+    "structural health monitoring",
+    "edge computing",
+    "reference architecture",
+    "anomaly detection",
+    "bridge monitoring",
+    "vibration"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "10.5281/zenodo.3745914",
+      "relation": "requires",
+      "scheme": "doi"
+    },
+    {
+      "identifier": "10.5281/zenodo.8300495",
+      "relation": "requires",
+      "scheme": "doi"
+    },
+    {
+      "identifier": "10.5281/zenodo.3234805",
+      "relation": "requires",
+      "scheme": "doi"
+    }
+  ]
+}
